@@ -5,7 +5,6 @@
  */
 package Multiprocesador.Comunicacion;
 
-import Multiprocesador.Memoria.Memoria;
 import Multiprocesador.Procesamiento.Cpu;
 
 /**
@@ -15,13 +14,23 @@ import Multiprocesador.Procesamiento.Cpu;
 public class Controlador {
     
     private int idControlador;
+    private Bus bus;
     
-    public Controlador(int idControlador){
+    public Controlador(int idControlador, Bus bus){
         this.idControlador = idControlador;
+        this.bus = bus;
     }
     
-    public void escribirMemoria(Cpu cpu,Memoria memoria){
-        
+    public int escribirMemoria(Cpu cpu, int dato, int direccion) throws InterruptedException{
+        System.out.println("Controlador Escribiendo en direccion "+direccion+" para Procesador "+cpu.getId());
+        bus.getRequest().add(new Request(1,cpu.getId(), direccion));
+        return bus.procesarTopRequest();
+    }
+    
+    public int leerMemoria(Cpu cpu, int direccion) throws InterruptedException{
+        System.out.println("Controlador Leyendo en direccion "+direccion+" para Procesador"+cpu.getId());
+        bus.getRequest().add(new Request(0,cpu.getId(), direccion));
+        return bus.procesarTopRequest();
     }
     /**
      * @return the idControlador
@@ -35,5 +44,19 @@ public class Controlador {
      */
     public void setIdControlador(int idControlador) {
         this.idControlador = idControlador;
+    }
+
+    /**
+     * @return the bus
+     */
+    public Bus getBus() {
+        return bus;
+    }
+
+    /**
+     * @param bus the bus to set
+     */
+    public void setBus(Bus bus) {
+        this.bus = bus;
     }
 }

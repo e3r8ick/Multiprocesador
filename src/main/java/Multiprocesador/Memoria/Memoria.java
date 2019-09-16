@@ -13,5 +13,7 @@ public interface Memoria {
     
     public void escribir(int posicion, int dato);
     public int leer(int posicion);
+    public void printMemoria();
+    public void guardarMemoria();
 
 }

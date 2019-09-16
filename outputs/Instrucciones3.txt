@@ -1,0 +1,6 @@
+Instruccion: 2 Direccion: 5
+Instruccion: 1 Direccion: 8
+Instruccion: 2 Direccion: 3
+Instruccion: 1 Direccion: 2
+Instruccion: 1 Direccion: 6
+Instruccion: 2 Direccion: 7

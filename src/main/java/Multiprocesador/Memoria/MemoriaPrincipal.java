@@ -5,6 +5,9 @@
  */
 package Multiprocesador.Memoria;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
+
 /**
  *
  * @author e3r8ick
@@ -12,9 +15,14 @@ package Multiprocesador.Memoria;
 public class MemoriaPrincipal implements Memoria{
     
     private int[] mem;
+    private int tamano;
     
     public MemoriaPrincipal(int tamano){
+        this.tamano = tamano;
         mem = new int[tamano];
+        for(int i =0; i < tamano; i++){
+            mem[i] = 0;
+        }
     }
   
     @Override
@@ -39,5 +47,54 @@ public class MemoriaPrincipal implements Memoria{
      */
     public void setMem(int[] mem) {
         this.mem = mem;
+    }
+
+    @Override
+    public void printMemoria() {
+        System.out.println("Memoria:");
+       for(int i = 0; i < tamano; i++){
+           System.out.println("Posicion "+i+": "+mem[i]);
+       }
+        System.out.println("");
+    }
+
+    /**
+     * @return the tamano
+     */
+    public int getTamano() {
+        return tamano;
+    }
+
+    /**
+     * @param tamano the tamano to set
+     */
+    public void setTamano(int tamano) {
+        this.tamano = tamano;
+    }
+
+    @Override
+    public void guardarMemoria() {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("outputs/Memoria.txt");
+            pw = new PrintWriter(fichero);
+
+            for (int i = 0; i < tamano; i++)
+                pw.println(mem[i]);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           // Nuevamente aprovechamos el finally para 
+           // asegurarnos que se cierra el fichero.
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
     }
 }
