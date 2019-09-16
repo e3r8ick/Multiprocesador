@@ -14,35 +14,17 @@ import java.util.logging.Logger;
  *
  * @author e3r8ick
  */
-public class Multiprocesador extends Thread {
+public class Multiprocesador{
 
     private Procesador[] procesadores;
     private Clock clock;
     
-    public Multiprocesador(Procesador[] procesadores){
+    public Multiprocesador(Procesador[] procesadores, Clock clock){
         this.procesadores = procesadores;
-        clock = new Clock();
+        this.clock = clock;
     }
     
-    @Override
-    public void run(){
-        while(true){
-            if(clock.isClock()){
-                System.out.println("Clock en True");
-                notifyAll();
-            }
-            else{
-                System.out.println("Clock en False");
-                clock.cambioFlanco();
-                try {
-                    wait();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Multiprocesador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
 
-        }
-    }
     
     /**
      * @return the procesadores

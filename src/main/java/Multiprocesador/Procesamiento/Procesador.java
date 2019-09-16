@@ -5,6 +5,7 @@
  */
 package Multiprocesador.Procesamiento;
 
+import Multiprocesador.Comunicacion.Clock;
 import Multiprocesador.Comunicacion.Controlador;
 import Multiprocesador.Memoria.Cache;
 import java.io.FileWriter;
@@ -24,52 +25,56 @@ public class Procesador extends Thread {
     private Controlador controlador;
     private Cache cache;
     private Cpu cpu;
+    private Clock clock;
 
     public Procesador(int idProcesador, Queue<Instruccion> instrucciones, 
-            Controlador controlador, Cache cache, Cpu cpu){
+            Controlador controlador, Cache cache, Cpu cpu, Clock clock){
         this.idProcesador = idProcesador;
         this.instrucciones = instrucciones;
         this.cache = cache;
         this.controlador = controlador;
         this.cpu = cpu;
+        this.clock = clock;
     }
     
-    public void procesarInstruccion() throws InterruptedException{
+    public void procesarInstruccion(Clock clock) throws InterruptedException{
         while(instrucciones.size() !=0){
-            //tomamos la instruccion top
-            Instruccion top = instrucciones.remove();
-            int returnValue = 0;
+            if(clock.isClock()){
+                //tomamos la instruccion top
+                Instruccion top = instrucciones.remove();
+                int returnValue = 0;
 
-            switch (top.getOperacion()) {
-            //leer
-                case 0:
-                   System.out.println("Procesador "+idProcesador+" Leyendo en direccion "+top.getDireccion());
-                   int asociatividad = 0;
-                   switch(controlador.leerMemoria(cpu, top.getDireccion())){
-                       case 9:
-                           asociatividad = 1;
-                       case 10:
-                           asociatividad = 2;
-                       case 11:
-                           asociatividad = 3;
-                       case 12:
-                           asociatividad = 4;
-                       case 13:
-                           asociatividad = 5;
-                       case 14:
-                           asociatividad = 6;
-                       case 15:
-                           asociatividad = 7;
-                   }
-                   cache.escribir(asociatividad, idProcesador);
-            //ecribir
-                case 1:
-                    System.out.println("Procesador "+idProcesador+" Escribibiendo en direccion "+top.getDireccion());
-                    returnValue = controlador.escribirMemoria(cpu, idProcesador, top.getDireccion());
-            //procesar
-                case 2:
-                    System.out.println("Procesador "+idProcesador+" Procesando en direccion "+top.getDireccion());
-                    esperar(1);
+                switch (top.getOperacion()) {
+                //leer
+                    case 0:
+                       System.out.println("Procesador "+idProcesador+" Leyendo en direccion "+top.getDireccion());
+                       int asociatividad = 0;
+                       switch(controlador.leerMemoria(cpu, top.getDireccion())){
+                           case 9:
+                               asociatividad = 1;
+                           case 10:
+                               asociatividad = 2;
+                           case 11:
+                               asociatividad = 3;
+                           case 12:
+                               asociatividad = 4;
+                           case 13:
+                               asociatividad = 5;
+                           case 14:
+                               asociatividad = 6;
+                           case 15:
+                               asociatividad = 7;
+                       }
+                       cache.escribir(asociatividad, idProcesador);
+                //ecribir
+                    case 1:
+                        System.out.println("Procesador "+idProcesador+" Escribibiendo en direccion "+top.getDireccion());
+                        returnValue = controlador.escribirMemoria(cpu, idProcesador, top.getDireccion());
+                //procesar
+                    case 2:
+                        System.out.println("Procesador "+idProcesador+" Procesando en direccion "+top.getDireccion());
+                        esperar(1);
+                }
             }
         }
     }
@@ -77,7 +82,7 @@ public class Procesador extends Thread {
     @Override
     public void run() {
         try {
-            procesarInstruccion();
+            procesarInstruccion(clock);
         } catch (InterruptedException ex) {
             Logger.getLogger(Procesador.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,6 +184,20 @@ public class Procesador extends Thread {
      */
     public void setCpu(Cpu cpu) {
         this.cpu = cpu;
+    }
+
+    /**
+     * @return the clock
+     */
+    public Clock getClock() {
+        return clock;
+    }
+
+    /**
+     * @param clock the clock to set
+     */
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 
 }

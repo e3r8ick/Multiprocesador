@@ -6,6 +6,7 @@
 package Multiprocesador;
 
 import Multiprocesador.Comunicacion.Bus;
+import Multiprocesador.Comunicacion.Clock;
 import Multiprocesador.Comunicacion.Controlador;
 import Multiprocesador.Comunicacion.Request;
 import Multiprocesador.Memoria.Cache;
@@ -64,35 +65,37 @@ public class Main {
             //Bus global
             Bus bus = new Bus(1,requestBus,new MemoriaPrincipal(16));
             
+            //Clock global
+            Clock clock = new Clock();
+            
             //creacion de los procesadores
             Procesador procesador1 = new Procesador(1,instruiccionesProcesador1,
-                    new Controlador(1,bus),new Cache(8,1),new Cpu(1));
+                    new Controlador(1,bus),new Cache(8,1),new Cpu(1),clock);
             Procesador procesador2 = new Procesador(2,instruiccionesProcesador2,
-                    new Controlador(2,bus),new Cache(8,2),new Cpu(2));
+                    new Controlador(2,bus),new Cache(8,2),new Cpu(2),clock);
             Procesador procesador3 = new Procesador(3,instruiccionesProcesador3,
-                    new Controlador(3,bus),new Cache(8,3),new Cpu(3));
+                    new Controlador(3,bus),new Cache(8,3),new Cpu(3),clock);
             Procesador procesador4 = new Procesador(4,instruiccionesProcesador4,
-                    new Controlador(4,bus),new Cache(8,4),new Cpu(4));
+                    new Controlador(4,bus),new Cache(8,4),new Cpu(4),clock);
             
             Procesador[] procesadores = {procesador1,
                                          procesador2,
                                          procesador3,
                                          procesador4};
             
-            Multiprocesador multiprocesador = new Multiprocesador(procesadores);
+            Multiprocesador multiprocesador = new Multiprocesador(procesadores,clock);
             procesador1.guardarInstrucciones();
             procesador2.guardarInstrucciones();            
             procesador3.guardarInstrucciones();
             procesador4.guardarInstrucciones();
             
-            multiprocesador.start();
             procesador1.start();
             procesador2.start();            
             procesador3.start();
             procesador4.start();
             
             for(int i = 0; i<10; i++){
-                multiprocesador.getClock().cambioFlanco();
+                clock.cambioFlanco();
                 System.out.println("Cambiamos a: "+multiprocesador.getClock().isClock());
                 multiprocesador.getProcesadores()[0].getControlador().getBus().getMemoria().guardarMemoria();
                 multiprocesador.getProcesadores()[0].getCache().guardarMemoria();

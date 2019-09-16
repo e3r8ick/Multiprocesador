@@ -1,4 +1,4 @@
-Valor: 0 Estado 2
+Valor: 1 Estado 1
 Valor: 0 Estado 2
 Valor: 0 Estado 2
 Valor: 0 Estado 2
